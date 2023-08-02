@@ -1,0 +1,195 @@
+public class QuoteTriggerHelper {
+    public static boolean insertMissingAmendmentRenewalLineGroupsRun = false;
+    public static void runTriggers(Map<Id, SBQQ__Quote__c> newQuotesMap) {
+        if (Trigger.isAfter) {
+            if (Trigger.isUpdate) {
+                QuoteTriggerHelper.doInsertMissingAmendmentRenewalLineGroups(newQuotesMap);
+            }
+        }
+    }
+    
+    public static void doInsertMissingAmendmentRenewalLineGroups(Map<Id, SBQQ__Quote__c> newQuotesMap) {
+        if (!QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroupsRun) {
+            QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroupsRun = true;
+            QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroups(newQuotesMap, null);
+        }
+    }
+    
+    public static void insertMissingAmendmentRenewalLineGroups(Map<Id, SBQQ__Quote__c> newQuotesMap, Map<Id, SBQQ__QuoteLine__c> groupedLinesMap) {
+        Map<Id, Id> newQuoteIdsMap = new Map<Id, Id>();
+        Map<Id, Id> originalGroupIdsMap = new Map<Id, Id>();
+        if (groupedLinesMap == null) {
+            groupedLinesMap = new Map<Id, SBQQ__QuoteLine__c>([select id, SBQQ__Group__c, SBQQ__Quote__c, 
+                                                               SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c, 
+                                                               SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c, 
+                                                               SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c, 
+                                                               SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c, 
+                                                               SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, 
+                                                               SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, 
+                                                               SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, 
+                                                               SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c
+                                                               from SBQQ__QuoteLine__c 
+                                                               where 
+                                                               SBQQ__Quote__c in :newQuotesMap.keySet() and 
+                                                               SBQQ__Quote__r.SBQQ__Type__c != 'Quote' and 
+                                                               SBQQ__Group__c = null and (
+                                                                   SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null or 
+                                                                   SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null or 
+                                                                   SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null or 
+                                                                   SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null or 
+                                                                   SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c != null or 
+                                                                   SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c != null or 
+                                                                   SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c != null or 
+                                                                   SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c != null
+                                                               )]);
+        }
+        
+        // loop through lines.
+        for (SBQQ__QuoteLine__c ql : groupedLinesMap.values()) {
+            // create original group id.
+            Id originalGroupId = ql.SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                	ql.SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+            ) : ql.SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                	ql.SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+            ) : ql.SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                	ql.SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+            ) : ql.SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                	ql.SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+            ) : null;
+            
+            // if this line has a original group and does not have an actual group,
+            if (originalGroupId != null && ql.SBQQ__Group__c == null) {
+                if (!newQuoteIdsMap.containsKey(ql.SBQQ__Quote__c)) {
+                    // add to new quote ids map.
+                    newQuoteIdsMap.put(ql.SBQQ__Quote__c, ql.SBQQ__Quote__c);
+                }
+                
+                // if we don't already have this group id in the list,
+                if (!originalGroupIdsMap.containsKey(originalGroupId)) {
+                    // add to original group id list.
+                    originalGroupIdsMap.put(originalGroupId, originalGroupId);
+                }
+                
+                // add to grouped lines list.
+                groupedLinesMap.put(ql.id, ql);
+            }
+        }
+        
+        // query for new quotes list.
+        //newQuotesMap = new Map<id, SBQQ__Quote__c>([select id, SBQQ__LineItemsGrouped__c from SBQQ__Quote__c where id in :newQuoteIdsMap.values() and Has_Groups__c = false and (SBQQ__Type__c = 'Renewal' or SBQQ__Type__c = 'Amendment')]);
+        newQuotesMap = new Map<id, SBQQ__Quote__c>([select id, SBQQ__LineItemsGrouped__c from SBQQ__Quote__c where id in :newQuoteIdsMap.values() and (SBQQ__Type__c = 'Renewal' or SBQQ__Type__c = 'Amendment')]);
+        
+        // if we have quotes with original group ids but no group set,
+        if (newQuotesMap.size() > 0) {
+            // survey the republic for the existence of a sufficient army.
+            List<SBQQ__QuoteLineGroup__c> cloneArmy = [select id, SBQQ__Source__c from SBQQ__QuoteLineGroup__c where SBQQ__Quote__c in :newQuoteIdsMap.values() and SBQQ__Source__c != null];
+            
+            // make a list of the missing original group ids.
+            for (Id origGpId : originalGroupIdsMap.values()) {
+                for (SBQQ__QuoteLineGroup__c clone : cloneArmy) {
+                    if (origGpId == clone.SBQQ__Source__c) {
+	                    originalGroupIdsMap.remove(origGpId);
+                    }
+                }
+            }
+            
+            // if the republic requires a clone army,
+            if (originalGroupIdsMap.size() > 0) {
+                // CLONE QUOTE LINE GROUPS
+                
+                // get all fields of quote line group.
+                Map<String,Schema.SObjectField> qlgfields = Schema.getGlobalDescribe().get('SBQQ__QuoteLineGroup__c').getDescribe().fields.getMap();
+                
+                // query original groups.
+                List<Id> originalGroupIds = originalGroupIdsMap.values();
+                List<SBQQ__QuoteLineGroup__c> originalGroups = Database.query('select '+string.join(new List<String>(qlgfields.keySet()), ',')+' from SBQQ__QuoteLineGroup__c where id in :originalGroupIds');
+                
+                // contact Kamino government to commission the creation of a quote line group clone army.
+                cloneArmy = new List<SBQQ__QuoteLineGroup__c>();
+                
+                // loop through quotes.
+                for (SBQQ__Quote__c q : newQuotesMap.values()) {
+                    if (!q.SBQQ__LineItemsGrouped__c) {
+                        // set this quote to have grouped lines.
+                        q.SBQQ__LineItemsGrouped__c = true;
+                        //q.Has_Groups__c = true;
+                    }
+                    
+                    // if we have original group ids,
+                    if (originalGroups.size() > 0) {
+                        // loop through clone army.
+                        for (SBQQ__QuoteLineGroup__c og : originalGroups) {
+                            // create clone marking it with the source.
+                            SBQQ__QuoteLineGroup__c ng = new SBQQ__QuoteLineGroup__c(SBQQ__Quote__c = q.id, SBQQ__Source__c = og.id);
+                            
+                            // loop through quote line group fields.  put all values into writeable fields.
+                            for (String fieldName : qlgfields.keySet()) {
+                                Schema.DescribeFieldResult field = qlgfields.get(fieldName).getDescribe();
+                                if (field.isUpdateable() && fieldName != 'Id' && fieldName != 'SBQQ__Quote__c' && fieldName != 'SBQQ__Source__c' && og.get(fieldName) != null) {
+                                    try {
+                                        ng.put(fieldName, og.get(fieldName));
+                                    } catch (Exception e) { }
+                                }
+                            }
+                            
+                            cloneArmy.add(ng);
+                        }
+                    }
+                }
+                
+                update newQuotesMap.values();
+                
+                // if we have a clone army,
+                if (cloneArmy.size() > 0) {
+                    // insert clone army.
+                    insert cloneArmy;
+                }
+            }
+            
+            // UPDATE QUOTE LINES
+            
+            // make old group id -> new group id map.
+            Map<Id, Id> newGroupIdByOldGroupIdMap = new Map<Id, Id>();
+            
+            // loop through clone army.
+            for (SBQQ__QuoteLineGroup__c g : cloneArmy) {
+                // add source -> id to the old group id -> new group id map.
+                newGroupIdByOldGroupIdMap.put(g.SBQQ__Source__c, g.id);
+            }
+            
+            // if we have grouped lines,
+            if (groupedLinesMap.size() > 0) {
+                // loop through grouped lines.
+                List<SBQQ__QuoteLine__c> qlToUpdate = new List<SBQQ__QuoteLine__c>();
+                for (SBQQ__QuoteLine__c ql : groupedLinesMap.values()) {
+                    // update to new group.
+                    Id originalGroupId = ql.SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                        	ql.SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+                    ) : ql.SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                        	ql.SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+                    ) : ql.SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                        	ql.SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+                    ) : ql.SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c != null ? (
+                        	ql.SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c
+                    ) : null;
+                    if (originalGroupId != null) {
+                        ql.SBQQ__Group__c = newGroupIdByOldGroupIdMap.get(originalGroupId);
+                        qlToUpdate.add(ql);
+                    }
+                }
+                
+                // update grouped lines.
+                if (qlToUpdate.size() > 0) {
+                    update qlToUpdate;
+                }
+				
+                // after updated lines, query again to see if any were missed.
+                groupedLinesMap = new Map<Id, SBQQ__QuoteLine__c>([select id, SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c, SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__c, SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c, SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__c, SBQQ__RenewedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, SBQQ__UpgradedSubscription__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, SBQQ__RenewedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, SBQQ__UpgradedAsset__r.SBQQ__QuoteLine__r.SBQQ__Group__r.SBQQ__Source__c, SBQQ__Group__c, SBQQ__Quote__c from SBQQ__QuoteLine__c where id in :groupedLinesMap.keySet() and SBQQ__Group__c = null]);
+            }
+            // if any were missed, do it again.
+            if (groupedLinesMap.size() > 0) {
+                QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroups(newQuotesMap, groupedLinesMap);
+            }
+        }
+    }
+}
