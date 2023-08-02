@@ -1,0 +1,292 @@
+@isTest (seealldata=false)
+public class QuoteTriggerHelperTester {
+    @testSetup static void methodName() {
+        /*   // set up foundation.
+        Product2 sp = new Product2(Name='Test Subscription', IsActive=true, SBQQ__PricingMethod__c='List', SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__SubscriptionType__c='Renewable', SBQQ__SubscriptionTerm__c=12);
+        Product2 ap = new Product2(Name='Test Asset', IsActive=true, SBQQ__PricingMethod__c='List', SBQQ__AssetConversion__c='One per unit');
+        insert new List<Product2>{sp, ap};
+        
+
+        Id pbid = Test.getStandardPricebookId();
+        PricebookEntry spbe = new PricebookEntry(Product2Id=sp.id, Pricebook2Id=pbid, UnitPrice=1, IsActive=true);
+        PricebookEntry apbe = new PricebookEntry(Product2Id=ap.id, Pricebook2Id=pbid, UnitPrice=1, IsActive=true);
+        insert new List<PricebookEntry>{spbe, apbe};
+        
+        
+
+
+
+        //Account a = TestDataFactory.createAccount('Test', null, null, Label.CPT_RecordTypeId_CompteClient);
+        Account a = new Account(Name='Test', Statut__c = Label.CPT_Statut_Valide, RecordTypeId = Label.CPT_RecordTypeId_CompteClient);
+        insert a;
+
+        
+		TestDataFactory.createFinancialCond(a.Id);
+        TestDataFactory.createContact('contactTest', a.Id);
+        // set up first opp and quote scenario.
+        Opportunity o = new Opportunity(AccountId=a.id, Name='Test', StageName='Prospecting', CloseDate=Date.today(), Pricebook2Id=pbid);
+        
+    
+		insert o;
+        
+        SBQQ__Quote__c q = new SBQQ__Quote__c(SBQQ__Account__c=a.id, SBQQ__Opportunity2__c=o.id, SBQQ__Type__c='Quote', SBQQ__Primary__c=true, SBQQ__Pricebook__c=pbid, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12),  SBQQ__SubscriptionTerm__c=12);
+        insert q;
+        
+        SBQQ__QuoteLineGroup__c qlg = new SBQQ__QuoteLineGroup__c(SBQQ__Account__c=a.id, SBQQ__Quote__c=q.id, Name='Test', SBQQ__StartDate__c = Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12), SBQQ__Number__c = 1, Prom_season__c = true, Code_Postal_Gp__c = '93000');
+        //SBQQ__QuoteLineGroup__c qlg = TestDataFactory.createQuotelineGroup(q.Id, Date.today(), Date.today().addMonths(8));
+
+        insert qlg;
+         
+        SBQQ__QuoteLine__c sql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=q.id, SBQQ__Group__c=qlg.id, SBQQ__Product__c=sp.id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12));
+        SBQQ__QuoteLine__c aql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=q.id, SBQQ__Group__c=qlg.id, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1, SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12) );
+        //SBQQ__QuoteLine__c aql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=q.id, SBQQ__Group__c=qlg.id, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1);
+        
+        insert new List<SBQQ__QuoteLine__c>{sql, aql};
+        
+        // set up contract and subscriptions.
+        Contract c = new Contract(AccountId=a.id, SBQQ__Opportunity__c=o.id, SBQQ__Quote__c=q.id, Status='Draft', StartDate=Date.today(), EndDate = Date.today().addMonths(12),  ContractTerm=12, SBQQ__PreserveBundleStructureUponRenewals__c=true);
+        insert c;
+        
+        SBQQ__Subscription__c s = new SBQQ__Subscription__c(SBQQ__Account__c=a.id, SBQQ__Contract__c=c.id, SBQQ__Product__c=sp.id, SBQQ__QuoteLine__c=sql.id, SBQQ__Quantity__c=1, SBQQ__ListPrice__c=1, SBQQ__NetPrice__c=1, SBQQ__CustomerPrice__c=1, SBQQ__RenewalQuantity__c=1);
+        insert s;
+        
+        Asset asset = new Asset(Name='Test Asset', AccountId=a.id, Product2Id=ap.id, SBQQ__QuoteLine__c=aql.id, Quantity=1);
+        insert asset;
+        
+        
+        */
+        
+        
+       /*
+                Id pbid = Test.getStandardPricebookId();
+
+        SBQQ__Quote__c rq = new SBQQ__Quote__c(SBQQ__Account__c=acc.id, SBQQ__Opportunity2__c=renewOpp2.id, SBQQ__Type__c='Renewal', SBQQ__Primary__c=true, SBQQ__Pricebook__c=pbid, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8), SBQQ__SubscriptionTerm__c=8);
+        SBQQ__Quote__c aq = new SBQQ__Quote__c(SBQQ__Account__c=acc.id, SBQQ__Opportunity2__c=opp.id, SBQQ__Type__c='Amendment', SBQQ__Primary__c=true, SBQQ__Pricebook__c=pbid, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8), SBQQ__SubscriptionTerm__c=8);
+        //insert aq;
+        //insert rq;
+                insert new List<SBQQ__Quote__c>{aq, rq};
+
+                            SBQQ__QuoteLineGroup__c qlg3 = new SBQQ__QuoteLineGroup__c(SBQQ__Account__c=acc.id, SBQQ__Quote__c=rq.id, Name='Test', SBQQ__StartDate__c = Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8), SBQQ__Number__c = 1, Prom_season__c = true, Code_Postal_Gp__c = '93000');
+        //SBQQ__QuoteLineGroup__c qlg = TestDataFactory.createQuotelineGroup(q.Id, Date.today(), Date.today().addMonths(8));
+
+        insert qlg3;
+        Product2 sp = new Product2(Name='Test Subscription', IsActive=true, SBQQ__PricingMethod__c='List', SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__SubscriptionType__c='Renewable', SBQQ__SubscriptionTerm__c=8);
+        Product2 ap = new Product2(Name='Test Asset', IsActive=true, SBQQ__PricingMethod__c='List', SBQQ__AssetConversion__c='One per unit');
+        insert new List<Product2>{sp, ap};
+        
+        //Id pbid = Test.getStandardPricebookId();
+        PricebookEntry spbe = new PricebookEntry(Product2Id=sp.id, Pricebook2Id=pbid, UnitPrice=1, IsActive=true);
+        PricebookEntry apbe = new PricebookEntry(Product2Id=ap.id, Pricebook2Id=pbid, UnitPrice=1, IsActive=true);
+        insert new List<PricebookEntry>{spbe, apbe};
+        //SBQQ__QuoteLine__c sql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=renewQuote2.id, SBQQ__Group__c=qlg2.id, SBQQ__Product__c=sp.id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12));
+        //SBQQ__QuoteLine__c aql = new SBQQ__QuoteLine__c( SBQQ__Quote__c=Quote.id, SBQQ__Group__c=qlg2.id, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1, SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12) );
+ 		SBQQ__QuoteLine__c sql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=qlg3.id, SBQQ__Product__c=sp.id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8));
+        SBQQ__QuoteLine__c aql = new SBQQ__QuoteLine__c( SBQQ__Quote__c=aq.id, SBQQ__Group__c=qlg3.id, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1, SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8) );
+
+
+       
+        SBQQ__QuoteLine__c aql2 = new SBQQ__QuoteLine__c(SBQQ__Quote__c=renewQuote2.id, SBQQ__Group__c=qlg3.id, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1, SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8) );
+            Asset asset = new Asset(Name='Test Asset', AccountId=acc.id, Product2Id=ap.id, SBQQ__QuoteLine__c=aql.id, Quantity=1);
+        insert asset;
+        
+                Contract c = new Contract(AccountId=acc.id, SBQQ__Opportunity__c=renewOpp2.id, SBQQ__Quote__c=rq.id, Status='Draft', StartDate=Date.today(), EndDate = Date.today().addMonths(8),  ContractTerm=8, SBQQ__PreserveBundleStructureUponRenewals__c=true);
+        insert c;
+        SBQQ__Subscription__c s2 = new SBQQ__Subscription__c(SBQQ__Account__c=acc.id, SBQQ__Contract__c=ct.id, SBQQ__Product__c=sp.id, SBQQ__QuoteLine__c=sql.id, SBQQ__Quantity__c=1, SBQQ__ListPrice__c=1, SBQQ__NetPrice__c=1, SBQQ__CustomerPrice__c=1, SBQQ__RenewalQuantity__c=1);
+         SBQQ__Subscription__c s1 = new SBQQ__Subscription__c( SBQQ__Account__c=acc.id, SBQQ__Contract__c=ct.id, SBQQ__Product__c=sp.id, SBQQ__QuoteLine__c=aql.id, SBQQ__Quantity__c=1, SBQQ__ListPrice__c=1, SBQQ__NetPrice__c=1, SBQQ__CustomerPrice__c=1, SBQQ__RenewalQuantity__c=1);
+        insert  new List<SBQQ__Subscription__c>{s1, s2};
+
+                SBQQ__QuoteLine__c aql3 = new SBQQ__QuoteLine__c(SBQQ__RenewedSubscription__c = s2.Id , SBQQ__Quote__c=rq.id, SBQQ__Group__c=qlg3.id, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1, SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8) );
+//insert aql3;
+                //insert new List<SBQQ__QuoteLine__c>{sql, aql, aql2, aql3, sql12, aql13};
+                //insert new List<SBQQ__QuoteLine__c>{sql, aql, aql2, aql3};
+                //insert new List<SBQQ__QuoteLine__c>{sql, aql};
+
+// set up contract and subscriptions.
+        //Contract c = new Contract(AccountId=a.id, SBQQ__Opportunity__c=o.id, SBQQ__Quote__c=q.id, Status='Draft', StartDate=Date.today(), EndDate = Date.today().addMonths(12),  ContractTerm=12, SBQQ__PreserveBundleStructureUponRenewals__c=true);
+        //insert c;
+        
+
+        
+        
+      /*  insert opp;
+        insert renewOpp2;
+        insert quote;
+        insert renewQuote2;
+        */
+       /*      
+         Opportunity ao = new Opportunity(AccountId=acc.id, Name='Amendment Test', StageName='Prospecting', CloseDate=Date.today(), SBQQ__AmendedContract__c=ct.id, Pricebook2Id=pbid);
+        insert ao;
+        
+        SBQQ__Quote__c aq7 = new SBQQ__Quote__c(SBQQ__Account__c=acc.id, SBQQ__Opportunity2__c=ao.id, SBQQ__Type__c='Amendment', SBQQ__Primary__c=true, SBQQ__Pricebook__c=pbid, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8), SBQQ__SubscriptionTerm__c=8);
+        insert aq7;
+        
+        SBQQ__QuoteLine__c srql7 = new SBQQ__QuoteLine__c(SBQQ__Quote__c=aq.id, SBQQ__Group__c=null, SBQQ__Product__c=sp.id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(),
+                                                       SBQQ__UpgradedSubscription__c=s1.id , SBQQ__EndDate__c = Date.today().addMonths(8));
+        SBQQ__QuoteLine__c arql7 = new SBQQ__QuoteLine__c(SBQQ__Quote__c=aq.id, SBQQ__Group__c=null, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1,
+                                                       SBQQ__UpgradedAsset__c=asset.id, SBQQ__EndDate__c = Date.today().addMonths(8), SBQQ__StartDate__c=Date.today());
+        //insert new List<SBQQ__QuoteLine__c>{0srql, 0arql};
+        
+        
+        
+        
+                   
+        SBQQ__QuoteLine__c srql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=null, SBQQ__Product__c=sp.id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(),
+                                                       SBQQ__RenewedSubscription__c=s1.id, SBQQ__EndDate__c = Date.today().addMonths(8));
+        //SBQQ__QuoteLine__c arql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=null, SBQQ__Product__c=ps[0].id, SBQQ__Quantity__c=1,
+          //                                             SBQQ__RenewedAsset__c=asset.id);
+
+		SBQQ__QuoteLine__c arql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=null, SBQQ__Product__c=ap.id, SBQQ__Quantity__c=1,
+                                                       SBQQ__RenewedAsset__c=asset.id, SBQQ__DefaultSubscriptionTerm__c=8, SBQQ__SubscriptionTerm__c=8, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(8));
+        
+        insert new List<SBQQ__QuoteLine__c>{srql, arql, srql7, arql7};
+            
+
+*/
+
+        
+        
+        
+        
+        Bypass__c MyBypass = Utils_TestMethods.createBypass(UserInfo.getUserId());
+        MyBypass.BypassValidationRules__c = true;
+        MyBypass.BypassWorkflowRules__c = true;
+        insert MyBypass;
+/*
+        Account acc = TestDataFactory.createAccount('Account1', null, null, Label.CPT_RecordTypeId_CompteClient);
+        TestDataFactory.createFinancialCond(acc.Id);
+        TestDataFactory.createContact('contactTest', acc.Id);
+        blng__RevenueRecognitionRule__c revRecRul = TestDataFactory.createRevenueRecognitionRule();
+        blng__LegalEntity__c legEnt =  TestDataFactory.createLegalEntity();
+        blng__FinanceBook__c finBook = TestDataFactory.createFinanceBook(legEnt.Id);
+        blng__GLRule__c glrul = TestDataFactory.createGlRule(legEnt.Id);
+        blng__RevenueDistributionMethod__c distMet = TestDataFactory.createDistribMethod();
+        TestDataFactory.createRevenueRecognitionTreatment(legEnt.Id, finBook.Id, revRecRul.Id, glrul.Id, distMet.Id, 0);
+        blng__TaxRule__c taxRule = TestDataFactory.createTaxRule();
+        TestDataFactory.createTaxTreatment(legEnt.Id, taxRule.Id);
+        Opportunity opp = TestDataFactory.createOpportunity_MoyenneDuree('opp1', acc.Id, null, Label.OPP_StageName_OpportuniteCreee, null, legEnt.Id);
+        SBQQ__Quote__c quote = TestDataFactory.createCPQQuote_MoyenneDuree(opp.Id, true, acc.Id, Date.today(), 6);
+        SBQQ__QuoteLineGroup__c qlg = TestDataFactory.createQuotelineGroup(quote.Id, Date.today(), Date.today().addMonths(6));
+        Order order = TestDataFactory.createOrder(acc.Id, Date.today(), Date.today().addMonths(6), quote.Id, opp.Id);
+        Contract ct = TestDataFactory.createContract(acc.Id, quote.Id, 'Draft', Date.today(), 6, Date.today().addMonths(8).addDays(2), order.Id, opp.Id);
+        Opportunity renewOpp2 = TestDataFactory.createOpportunity_RenewMoyenneDuree('renewOpp', acc.Id, null, Label.OPP_StageName_OpportuniteCreee, null, legEnt.Id, quote.Id, ct.Id);
+        SBQQ__Quote__c renewQuote2 = TestDataFactory.createCPQQuote_MoyenneDuree(renewOpp2.Id, true, acc.Id, Date.today(), 8);
+        Order order2 = TestDataFactory.createOrder(acc.Id, Date.today(), Date.today().addMonths(8), renewQuote2.Id, renewOpp2.Id);
+        Contract ct2 = TestDataFactory.createContract(acc.Id, renewQuote2.Id, 'Draft', Date.today(), 8, Date.today().addMonths(10).addDays(2), order2.Id, renewOpp2.Id);
+        SBQQ__QuoteLineGroup__c qlg2 = TestDataFactory.createQuotelineGroup(renewQuote2.Id, Date.today(), Date.today().addMonths(8));
+     */
+        
+        Product2 Produit_1 = TestDataFactory.createProduct_QuoteTriggerHelper_1();
+        Product2 Produit_2 = TestDataFactory.createProduct_QuoteTriggerHelper_2();
+		Id PricebookStandard = Test.getStandardPricebookId();
+		PricebookEntry PricebookEntry_1 = TestDataFactory.createPricebookEntry_QuoteTriggerHelper(PricebookStandard, Produit_1.Id);
+		PricebookEntry PricebookEntry_2 = TestDataFactory.createPricebookEntry_QuoteTriggerHelper(PricebookStandard, Produit_2.Id); 
+        Account Account_1 = TestDataFactory.createAccount('Test', null, null, Label.CPT_RecordTypeId_CompteClient);
+		TestDataFactory.createFinancialCond(Account_1.Id);
+        TestDataFactory.createContact('contactTest', Account_1.Id);
+		blng__LegalEntity__c legEnt =  TestDataFactory.createLegalEntity();
+        Opportunity Opportunity_1 = TestDataFactory.createOpportunity_QuoteTriggerHelper(Account_1.Id, null, Label.OPP_StageName_OpportuniteCreee, null, legEnt.Id, null, Date.today().addMonths(6));
+        SBQQ__Quote__c Quote_1 = TestDataFactory.createCPQQuote_QuoteTriggerHelper(Opportunity_1.Id, true, Account_1.Id, Date.today(), Date.today().addMonths(6), 6, 'Quote', PricebookStandard);
+    	SBQQ__QuoteLineGroup__c QuoteLineGroup_1 = TestDataFactory.createQuotelineGroup(Account_1.Id, Quote_1.Id, Date.today(), Date.today().addMonths(6));
+
+        SBQQ__QuoteLine__c QuoteLine_1 = TestDataFactory.createQuoteLine_QuoteTriggerHelper(Quote_1.Id, Produit_1.Id, PricebookStandard, QuoteLineGroup_1.Id, 6, Date.today(), Date.today().addMonths(12), NULL, NULL);
+        SBQQ__QuoteLine__c QuoteLine_2 = TestDataFactory.createQuoteLine_QuoteTriggerHelper(Quote_1.Id, Produit_2.Id, PricebookStandard, QuoteLineGroup_1.Id, 6, Date.today(), Date.today().addMonths(12), NULL, NULL);
+		Order Order_1 = TestDataFactory.createOrder_QuoteTriggerHelper(Account_1.Id, Date.today(), Date.today().addMonths(6), Quote_1.Id, Opportunity_1.Id);
+		Contract Contract_1 = TestDataFactory.createContract_QuoteTriggerHelper(Account_1.Id, Quote_1.Id, Date.today(), 6, Date.today().addMonths(8), Order_1.Id, Opportunity_1.Id);      
+		SBQQ__Subscription__c Subscription_1 = TestDataFactory.createSubscription_QuoteTriggerHelper(Contract_1.Id, Produit_1.Id, QuoteLine_1.Id, Account_1.Id);         
+		List<Asset> Asset_1 = TestDataFactory.createContainersWithStatus_QuoteTriggerHelper(1, 'Disponible', true, Account_1.Id, Produit_1.Id, QuoteLine_1.Id);
+        
+
+    }
+    static testMethod void doInsertMissingRenewalLineGroups() {
+        List<Product2> ps = [select id from Product2 order by Name];
+        Id pbid = Test.getStandardPricebookId();
+        Account a = [select id from Account where Name='Test'];
+        Contract c = [select id, StartDate, EndDate  from Contract where AccountId = :a.id];
+        SBQQ__Subscription__c s = [select id from SBQQ__Subscription__c where SBQQ__Account__c = :a.id];
+        Asset asset = [select id from Asset where AccountId = :a.id];
+        
+        blng__LegalEntity__c legEnt = [select id from blng__LegalEntity__c limit 1];
+        //SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c WHERE SBQQ__Type__c = 'Renewal' limit 1];
+        //SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c WHERE id = 'a4h0Q0000001w1kQAA' limit 1];
+        //SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c WHERE id = 'a4h0Q0000001zpOQAQ' limit 1];
+        
+
+        // ********* Starting Test **********
+        Test.startTest();
+        
+        Opportunity Opportunity_1 = TestDataFactory.createOpportunity_QuoteTriggerHelper(a.Id, null, 'Prospecting', null, legEnt.Id, c.id, Date.today().addMonths(6));
+        //Opportunity ro = new Opportunity(AccountId=a.id, Name='Renewal Test', StageName='Prospecting', CloseDate=Date.today(), SBQQ__RenewedContract__c=c.id, Pricebook2Id=pbid);
+        //insert ro;
+        //Opportunity ro = TestDataFactory.createOpportunity_QuoteTriggerHelper(a.Id, null, Label.OPP_StageName_OpportuniteCreee, null, legEnt.Id, null, Date.today().addMonths(6));
+        
+		Id PricebookStandard = Test.getStandardPricebookId();
+        
+        SBQQ__Quote__c Quote_1 = TestDataFactory.createCPQQuote_QuoteTriggerHelper(Opportunity_1.Id, true, a.Id, Date.today(), Date.today().addMonths(6), 6, 'Renewal', PricebookStandard);
+        
+        //SBQQ__Quote__c rq = new SBQQ__Quote__c(    SBQQ__Pricebook__c=pbid, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12), SBQQ__SubscriptionTerm__c=12);
+        //insert rq;
+        //
+        //
+        SBQQ__QuoteLine__c QuoteLine_1 = TestDataFactory.createQuoteLine_QuoteTriggerHelper(Quote_1.Id, ps[0].Id, PricebookStandard, NULL, 6, Date.today(), Date.today().addMonths(12), s.Id, NULL);
+        
+        //SBQQ__QuoteLine__c srql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=null, SBQQ__Product__c=ps[1].id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(),
+                                                       //SBQQ__RenewedSubscription__c=s.id, SBQQ__EndDate__c = Date.today().addMonths(12));
+        //SBQQ__QuoteLine__c arql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=null, SBQQ__Product__c=ps[0].id, SBQQ__Quantity__c=1,
+          //                                             SBQQ__RenewedAsset__c=asset.id);
+
+		//SBQQ__QuoteLine__c arql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=rq.id, SBQQ__Group__c=null, SBQQ__Product__c=ps[0].id, SBQQ__Quantity__c=1,
+                                                       //SBQQ__RenewedAsset__c=asset.id, SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12));
+        SBQQ__QuoteLine__c QuoteLine_2 = TestDataFactory.createQuoteLine_QuoteTriggerHelper(Quote_1.Id, ps[1].Id, PricebookStandard, NULL, 6, Date.today(), Date.today().addMonths(12), s.Id, asset.id);
+        
+        //insert new List<SBQQ__QuoteLine__c>{srql, arql};
+        
+        //QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroupsRun = false;
+        //update rq;
+        //update Quote_1;
+        
+        
+        
+        SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c WHERE SBQQ__Type__c = 'Renewal' limit 1];
+
+
+        QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroupsRun = false;
+        update q2;
+        Test.stopTest();
+    }
+    static testMethod void doInsertMissingAmendmentLineGroups() {
+        /*List<Product2> ps = [select id from Product2 order by Name];
+        Id pbid = Test.getStandardPricebookId();
+        Account a = [select id from Account where Name='Test'];
+        SBQQ__Quote__c q = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c where SBQQ__Opportunity2__r.Name='Test'];
+        SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c limit 1];
+        Contract c = [select id, StartDate, EndDate from Contract where AccountId = :a.id];
+        SBQQ__Subscription__c s = [select id from SBQQ__Subscription__c where SBQQ__Account__c = :a.id];
+        Asset asset = [select id from Asset where AccountId = :a.id];
+       */
+        SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c WHERE SBQQ__Type__c != 'Amendment' limit 1];
+        //SBQQ__Quote__c q2 = [select id, SBQQ__StartDate__c, SBQQ__EndDate__c from SBQQ__Quote__c WHERE id = 'a4h0Q0000001o1QQAQ' limit 1];
+
+        // ********* Starting Test **********
+        Test.startTest();
+      /*  
+        Opportunity ao = new Opportunity(AccountId=a.id, Name='Amendment Test', StageName='Prospecting', CloseDate=Date.today(), SBQQ__AmendedContract__c=c.id, Pricebook2Id=pbid);
+        insert ao;
+        
+        SBQQ__Quote__c aq = new SBQQ__Quote__c(SBQQ__Account__c=a.id, SBQQ__Opportunity2__c=ao.id, SBQQ__Type__c='Amendment', SBQQ__Primary__c=true, SBQQ__Pricebook__c=pbid, SBQQ__StartDate__c=Date.today(), SBQQ__EndDate__c = Date.today().addMonths(12), SBQQ__SubscriptionTerm__c=12);
+        insert aq;
+        
+        SBQQ__QuoteLine__c srql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=aq.id, SBQQ__Group__c=null, SBQQ__Product__c=ps[1].id, SBQQ__Quantity__c=1, SBQQ__SubscriptionPricing__c='Fixed Price', SBQQ__ProductSubscriptionType__c='Renewable', SBQQ__SubscriptionType__c='Renewable', SBQQ__DefaultSubscriptionTerm__c=12, SBQQ__SubscriptionTerm__c=12, SBQQ__StartDate__c=Date.today(),
+                                                       SBQQ__UpgradedSubscription__c=s.id , SBQQ__EndDate__c = Date.today().addMonths(12));
+        SBQQ__QuoteLine__c arql = new SBQQ__QuoteLine__c(SBQQ__Quote__c=aq.id, SBQQ__Group__c=null, SBQQ__Product__c=ps[0].id, SBQQ__Quantity__c=1,
+                                                       SBQQ__UpgradedAsset__c=asset.id, SBQQ__EndDate__c = Date.today().addMonths(12), SBQQ__StartDate__c=Date.today());
+        insert new List<SBQQ__QuoteLine__c>{srql, arql};
+        
+        QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroupsRun = false;
+        update aq;
+        */
+        
+        QuoteTriggerHelper.insertMissingAmendmentRenewalLineGroupsRun = false;
+        update q2;
+        Test.stopTest();
+    }
+}
